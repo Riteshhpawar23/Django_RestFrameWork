@@ -5,6 +5,7 @@ from teacher.models import teacher
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
+from django.http import Http404
 
 
 
@@ -61,3 +62,29 @@ class Teacher(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class Teacherdetail(APIView):
+    def get_object(self,pk):
+        try:
+            return teacher.objects.get(pk=pk)
+        except teacher.DoesNotExist:
+            raise Http404
+        
+    def get(self, request, pk):
+            teacher_instance = self.get_object(pk)
+            serializer = teacherSerializer(teacher_instance)
+            return Response(serializer.data, status=status.HTTP_200_OK)   
+        
+    def put(self, request, pk):
+            teacher_instance = self.get_object(pk)
+            serializer = teacherSerializer(teacher_instance, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+            teacher_instance = self.get_object(pk)
+            teacher_instance.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
