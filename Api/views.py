@@ -1,11 +1,13 @@
-from .serializers import StudentSerializer,teacherSerializer
+from .serializers import StudentSerializer,teacherSerializer,stuffSerializer
 from rest_framework.response import Response
 from Students.models import Student
 from teacher.models import teacher
+from stuff.models import Stuff
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from django.http import Http404
+from rest_framework import generics, mixins
 
 
 
@@ -88,3 +90,25 @@ class Teacherdetail(APIView):
             teacher_instance = self.get_object(pk)
             teacher_instance.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
+        
+class StuffListCreateView(generics.GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin):
+    queryset = Stuff.objects.all()
+    serializer_class = stuffSerializer
+
+    def get(self, request):
+        return self.list(request)
+
+    def post(self, request):
+        return self.create(request)
+class StuffDetailView(generics.GenericAPIView, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin):
+    queryset = Stuff.objects.all()
+    serializer_class = stuffSerializer
+
+    def get(self, request, pk):
+        return self.retrieve(request, pk)
+
+    def put(self, request, pk):
+        return self.update(request, pk)
+
+    def delete(self, request, pk):
+        return self.destroy(request, pk)
