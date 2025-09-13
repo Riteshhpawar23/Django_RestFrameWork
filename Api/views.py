@@ -1,8 +1,9 @@
-from .serializers import StudentSerializer,teacherSerializer,stuffSerializer
+from .serializers import StudentSerializer,teacherSerializer,stuffSerializer,ParentsSerializer
 from rest_framework.response import Response
 from Students.models import Student
 from teacher.models import teacher
 from stuff.models import Stuff
+from parents.models import Parents
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
@@ -112,3 +113,13 @@ class StuffDetailView(generics.GenericAPIView, mixins.RetrieveModelMixin, mixins
 
     def delete(self, request, pk):
         return self.destroy(request, pk)
+    
+
+class ParentsListCreateView(generics.ListCreateAPIView):
+    queryset = Parents.objects.all()
+    serializer_class = ParentsSerializer
+ 
+class ParentsDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Parents.objects.all()
+    serializer_class = ParentsSerializer
+    lookup_field = 'pk'
