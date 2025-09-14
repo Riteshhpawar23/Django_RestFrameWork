@@ -7,10 +7,23 @@ class BlogSerializer(serializers.ModelSerializer):
     """
     Serializer for the create_blog model with all fields
     """
+    image_url = serializers.SerializerMethodField()
+    
     class Meta:
         model = create_blog
         fields = '__all__'
         read_only_fields = ('date',)
+    
+    def get_image_url(self, obj):
+        """
+        Return full URL for image
+        """
+        if obj.image:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.image.url)
+            return f"http://127.0.0.1:8000{obj.image.url}"
+        return None
     
     def validate_title(self, value):
         """
@@ -34,16 +47,28 @@ class BlogListSerializer(serializers.ModelSerializer):
     Simplified serializer for listing blogs (without full content)
     """
     content_preview = serializers.SerializerMethodField()
+    image_url = serializers.SerializerMethodField()
     
     class Meta:
         model = create_blog
-        fields = ['id', 'title', 'slug', 'Author_name', 'date', 'image', 'Category', 'content_preview']
+        fields = ['id', 'title', 'slug', 'Author_name', 'date', 'image', 'image_url', 'Category', 'content_preview']
     
     def get_content_preview(self, obj):
         """
         Return first 200 characters of content as preview
         """
         return obj.content[:200] + '...' if len(obj.content) > 200 else obj.content
+    
+    def get_image_url(self, obj):
+        """
+        Return full URL for image
+        """
+        if obj.image:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.image.url)
+            return f"http://127.0.0.1:8000{obj.image.url}"
+        return None
 
 
 class BlogCreateSerializer(serializers.ModelSerializer):

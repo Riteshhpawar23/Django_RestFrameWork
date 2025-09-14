@@ -122,6 +122,11 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# Media files (uploaded files)
+import os
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
@@ -130,4 +135,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
     "http://127.0.0.1:8000",
+    "http://localhost:8001",
+    "http://127.0.0.1:8001",
 ]
+
+# Allow all origins for development (you can restrict this in production)
+CORS_ALLOW_ALL_ORIGINS = True

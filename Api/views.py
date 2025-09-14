@@ -39,6 +39,14 @@ class BlogListCreateView(generics.ListCreateAPIView):
             return BlogCreateSerializer
         return BlogListSerializer
     
+    def get_serializer_context(self):
+        """
+        Pass request context to serializer for building absolute URLs
+        """
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
+    
     def get_queryset(self):
         queryset = create_blog.objects.all().order_by('-date')
         
